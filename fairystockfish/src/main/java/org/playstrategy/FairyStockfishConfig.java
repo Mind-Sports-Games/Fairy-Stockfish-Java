@@ -6,8 +6,7 @@ import org.bytedeco.javacpp.tools.*;
 
 @Properties(
     value = @Platform(
-        includepath = {"/home/lakin/work/mso/Fairy-Stockfish-Java/thirdparty/Fairy-Stockfish-Lib/src/", "/home/lakin/work/mso/Fairy-Stockfish-Java/thirdparty/Fairy-Stockfish-Lib/vendor/Fairy-Stockfish/src/"},
-        linkpath = {"/home/lakin/work/mso/Fairy-Stockfish-Java/thirdparty/Fairy-Stockfish-Lib/build/"},
+        compiler = "cpp17",
         include = {"fairystockfish.h"},
         link = {"fairystockfish"}
     ),
