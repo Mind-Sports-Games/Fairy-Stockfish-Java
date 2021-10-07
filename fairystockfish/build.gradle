@@ -10,8 +10,11 @@ plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
     id 'org.bytedeco.gradle-javacpp-build' version "$javacppVersion"
-    id 'maven-publish'
+    id 'ivy-publish'
 }
+
+version = '0.0.1'
+group = 'org.playstrategy'
 
 
 repositories {
@@ -60,42 +63,21 @@ tasks.named('test') {
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'fairystockfish'
-            version = '0.0.1'
-            from components.java
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-            pom {
-                name = 'Fairy-Stockfish'
-                description = 'A java wrapper for the Fairy-Stockfish engine'
-                url = 'https://github.com/mind-sports-games/lila-maven'
-                licenses {
-                    license {
-                        name = 'GNU General Public License (GPL) version 3.0'
-                        url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'lakinw'
-                        name = 'Lakin Wecker'
-                        email = 'lakin@structuredabstraction.com'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git@github.com:Mind-Sports-Games/Fairy-Stockfish-Java.git'
-                    url = 'https://github.com/Mind-Sports-Games/Fairy-Stockfish-Java'
-                }
+    repositories {
+        ivy {
+            url = layout.buildDirectory.dir("repo")
+            patternLayout {
+                artifact '[organisation]/[module]/[revision]/[type]s/[artifact](.[ext])'
+                ivy '[organisation]/[module]/[revision]/[type]s/[artifact](.[ext])'
             }
         }
     }
-
+    publications {
+        ivy(IvyPublication) {
+            from components.java
+            descriptor.description {
+                text = providers.provider({ description })
+            }
+        }
+    }
 }
