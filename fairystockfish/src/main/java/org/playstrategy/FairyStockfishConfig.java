@@ -10,7 +10,7 @@ import org.bytedeco.javacpp.tools.*;
         include = {"fairystockfish.h"},
         link = {"fairystockfish"}
     ),
-    target = "FairyStockfish"
+    target = "org.playstrategy.FairyStockfish"
 )
 public class FairyStockfishConfig implements InfoMapper {
     public void map(InfoMap infoMap) {

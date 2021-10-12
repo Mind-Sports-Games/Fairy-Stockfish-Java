@@ -51,10 +51,12 @@ javacppBuildCommand {
 
 javacppBuildParser {
     // typically set here the classOrPackageNames to class names implementing InfoMap
+    classOrPackageNames = ['org.playstrategy.FairyStockfishConfig']
 }
 
 javacppBuildCompiler {
     // typically set here boolean flags like copyLibs
+    copyLibs = true
 }
 
 tasks.named('test') {
