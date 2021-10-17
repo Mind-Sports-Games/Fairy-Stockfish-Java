@@ -166,8 +166,15 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     }
 
     @Namespace("fairystockfish") public static native void init();
+    @Namespace("fairystockfish") public static native void info();
 
     @Namespace("fairystockfish") public static native @ByVal VectorOfStrings availableVariants();
+    // info about variants
+    // Note that this is unsafe and does not check
+    // to ensure the variant name exists.
+    @Namespace("fairystockfish") public static native @StdString BytePointer initialFen(@StdString BytePointer variantName);
+    @Namespace("fairystockfish") public static native @StdString String initialFen(@StdString String variantName);
+
     @Namespace("fairystockfish") public static native @ByVal PieceInfoMap availablePieces();
 
 
