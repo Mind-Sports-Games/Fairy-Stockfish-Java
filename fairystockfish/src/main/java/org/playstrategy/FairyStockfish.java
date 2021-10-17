@@ -9,6 +9,122 @@ import org.bytedeco.javacpp.annotation.*;
 public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     static { Loader.load(); }
 
+@Name("std::map<std::string,fairystockfish::PieceInfo>") public static class PieceInfoMap extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public PieceInfoMap(Pointer p) { super(p); }
+    public PieceInfoMap()       { allocate();  }
+    private native void allocate();
+    public native @Name("operator =") @ByRef PieceInfoMap put(@ByRef PieceInfoMap x);
+
+    public boolean empty() { return size() == 0; }
+    public native long size();
+
+    @Index public native @ByRef PieceInfo get(@StdString BytePointer i);
+    public native PieceInfoMap put(@StdString BytePointer i, PieceInfo value);
+
+    public native void erase(@ByVal Iterator pos);
+    public native @ByVal Iterator begin();
+    public native @ByVal Iterator end();
+    @NoOffset @Name("iterator") public static class Iterator extends Pointer {
+        public Iterator(Pointer p) { super(p); }
+        public Iterator() { }
+
+        public native @Name("operator ++") @ByRef Iterator increment();
+        public native @Name("operator ==") boolean equals(@ByRef Iterator it);
+        public native @Name("operator *().first") @MemberGetter @StdString BytePointer first();
+        public native @Name("operator *().second") @MemberGetter @ByRef @Const PieceInfo second();
+    }
+}
+
+@Name("std::vector<std::string>") public static class VectorOfStrings extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public VectorOfStrings(Pointer p) { super(p); }
+    public VectorOfStrings(BytePointer value) { this(1); put(0, value); }
+    public VectorOfStrings(BytePointer ... array) { this(array.length); put(array); }
+    public VectorOfStrings(String value) { this(1); put(0, value); }
+    public VectorOfStrings(String ... array) { this(array.length); put(array); }
+    public VectorOfStrings()       { allocate();  }
+    public VectorOfStrings(long n) { allocate(n); }
+    private native void allocate();
+    private native void allocate(@Cast("size_t") long n);
+    public native @Name("operator =") @ByRef VectorOfStrings put(@ByRef VectorOfStrings x);
+
+    public boolean empty() { return size() == 0; }
+    public native long size();
+    public void clear() { resize(0); }
+    public native void resize(@Cast("size_t") long n);
+
+    @Index(function = "at") public native @StdString BytePointer get(@Cast("size_t") long i);
+    public native VectorOfStrings put(@Cast("size_t") long i, BytePointer value);
+    @ValueSetter @Index(function = "at") public native VectorOfStrings put(@Cast("size_t") long i, @StdString String value);
+
+    public native @ByVal Iterator insert(@ByVal Iterator pos, @StdString BytePointer value);
+    public native @ByVal Iterator erase(@ByVal Iterator pos);
+    public native @ByVal Iterator begin();
+    public native @ByVal Iterator end();
+    @NoOffset @Name("iterator") public static class Iterator extends Pointer {
+        public Iterator(Pointer p) { super(p); }
+        public Iterator() { }
+
+        public native @Name("operator ++") @ByRef Iterator increment();
+        public native @Name("operator ==") boolean equals(@ByRef Iterator it);
+        public native @Name("operator *") @StdString BytePointer get();
+    }
+
+    public BytePointer[] get() {
+        BytePointer[] array = new BytePointer[size() < Integer.MAX_VALUE ? (int)size() : Integer.MAX_VALUE];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = get(i);
+        }
+        return array;
+    }
+    @Override public String toString() {
+        return java.util.Arrays.toString(get());
+    }
+
+    public BytePointer pop_back() {
+        long size = size();
+        BytePointer value = get(size - 1);
+        resize(size - 1);
+        return value;
+    }
+    public VectorOfStrings push_back(BytePointer value) {
+        long size = size();
+        resize(size + 1);
+        return put(size, value);
+    }
+    public VectorOfStrings put(BytePointer value) {
+        if (size() != 1) { resize(1); }
+        return put(0, value);
+    }
+    public VectorOfStrings put(BytePointer ... array) {
+        if (size() != array.length) { resize(array.length); }
+        for (int i = 0; i < array.length; i++) {
+            put(i, array[i]);
+        }
+        return this;
+    }
+
+    public VectorOfStrings push_back(String value) {
+        long size = size();
+        resize(size + 1);
+        return put(size, value);
+    }
+    public VectorOfStrings put(String value) {
+        if (size() != 1) { resize(1); }
+        return put(0, value);
+    }
+    public VectorOfStrings put(String ... array) {
+        if (size() != array.length) { resize(array.length); }
+        for (int i = 0; i < array.length; i++) {
+            put(i, array[i]);
+        }
+        return this;
+    }
+}
+
 // Parsed from fairystockfish.h
 
 // #ifndef FAIRYSTOCKFISH_H
@@ -30,7 +146,29 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #include "variant.h"
 // #include "apiutil.h"
 
+// #include <vector>
+// #include <map>
+
+    @Namespace("fairystockfish") @NoOffset public static class PieceInfo extends Pointer {
+        static { Loader.load(); }
+        /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+        public PieceInfo(Pointer p) { super(p); }
+    
+            public PieceInfo() { super((Pointer)null); allocate(); }
+            private native void allocate();
+            public PieceInfo(int pt) { super((Pointer)null); allocate(pt); }
+            private native void allocate(int pt);
+
+            public native int id();
+
+            public native @StdString BytePointer name();
+            public native @StdString BytePointer betza();
+    }
+
     @Namespace("fairystockfish") public static native void init();
+
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings availableVariants();
+    @Namespace("fairystockfish") public static native @ByVal PieceInfoMap availablePieces();
 
 
 // #endif // FAIRYSTOCKFISH_H
