@@ -125,6 +125,38 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     }
 }
 
+@NoOffset @Name("std::tuple<bool,int>") public static class BoolIntPair extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public BoolIntPair(Pointer p) { super(p); }
+    public BoolIntPair(@Cast("bool") boolean value0, int value1) { allocate(value0, value1); }
+    private native void allocate(@Cast("bool") boolean value0, int value1);
+    public BoolIntPair()       { allocate();  }
+    private native void allocate();
+    public native @Name("operator =") @ByRef BoolIntPair put(@ByRef BoolIntPair x);
+
+    public @Cast("bool") boolean get0() { return get0(this); }
+    @Namespace @Name("std::get<0>") public static native @Cast("bool") boolean get0(@ByRef BoolIntPair container);
+    public int get1() { return get1(this); }
+    @Namespace @Name("std::get<1>") public static native int get1(@ByRef BoolIntPair container);
+}
+
+@NoOffset @Name("std::tuple<bool,bool>") public static class BoolBoolPair extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public BoolBoolPair(Pointer p) { super(p); }
+    public BoolBoolPair(@Cast("bool") boolean value0, @Cast("bool") boolean value1) { allocate(value0, value1); }
+    private native void allocate(@Cast("bool") boolean value0, @Cast("bool") boolean value1);
+    public BoolBoolPair()       { allocate();  }
+    private native void allocate();
+    public native @Name("operator =") @ByRef BoolBoolPair put(@ByRef BoolBoolPair x);
+
+    public @Cast("bool") boolean get0() { return get0(this); }
+    @Namespace @Name("std::get<0>") public static native @Cast("bool") boolean get0(@ByRef BoolBoolPair container);
+    public @Cast("bool") boolean get1() { return get1(this); }
+    @Namespace @Name("std::get<1>") public static native @Cast("bool") boolean get1(@ByRef BoolBoolPair container);
+}
+
 // Parsed from fairystockfish.h
 
 // #ifndef FAIRYSTOCKFISH_H
@@ -149,6 +181,26 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #include <vector>
 // #include <map>
 
+
+    // Copied from the apiutil.h
+    /** enum fairystockfish::Notation */
+    public static final int
+        NOTATION_DEFAULT = 0,
+        // https://en.wikipedia.org/wiki/Algebraic_notation_(chess)
+        NOTATION_SAN = 1,
+        NOTATION_LAN = 2,
+        // https://en.wikipedia.org/wiki/Shogi_notation#Western_notation
+        NOTATION_SHOGI_HOSKING = 3, // Examples: P76, S’34
+        NOTATION_SHOGI_HODGES = 4, // Examples: P-7f, S*3d
+        NOTATION_SHOGI_HODGES_NUMBER = 5, // Examples: P-76, S*34
+        // http://www.janggi.pl/janggi-notation/
+        NOTATION_JANGGI = 6,
+        // https://en.wikipedia.org/wiki/Xiangqi#Notation
+        NOTATION_XIANGQI_WXF = 7;
+    @Namespace("fairystockfish") @MemberGetter public static native int VALUE_ZERO();
+    @Namespace("fairystockfish") @MemberGetter public static native int VALUE_DRAW();
+    @Namespace("fairystockfish") @MemberGetter public static native int VALUE_MATE();
+
     @Namespace("fairystockfish") @NoOffset public static class PieceInfo extends Pointer {
         static { Loader.load(); }
         /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
@@ -165,17 +217,465 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
             public native @StdString BytePointer betza();
     }
 
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean _fairystockfish_is_initialized(); public static native void _fairystockfish_is_initialized(boolean setter);
+    /**------------------------------------------------------------------------------
+     *  Initialize the fairystockfish library.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
     @Namespace("fairystockfish") public static native void init();
+
+    /**------------------------------------------------------------------------------
+     *  Return the version of the library.
+     * 
+     *  returns a string version number
+     * ------------------------------------------------------------------------------ */
+    @Namespace("fairystockfish") public static native @StdString BytePointer version();
+
+    /**------------------------------------------------------------------------------
+     *  Print to stdout useful information about the library and enabled variants
+     * ------------------------------------------------------------------------------ */
+    
+    ///
     @Namespace("fairystockfish") public static native void info();
 
+    // pyffish methods
+
+    /**------------------------------------------------------------------------------
+     *  Sets one of the UCI options that fairy stockfish supports.
+     * 
+     *  @param name The name of the parameter to set.
+     *  @param value The value of the parameters (in string form)
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    @Namespace("fairystockfish") public static native void setUCIOption(@StdString BytePointer name, @StdString BytePointer value);
+    @Namespace("fairystockfish") public static native void setUCIOption(@StdString String name, @StdString String value);
+
+    /**------------------------------------------------------------------------------
+     *  Given a string containing .ini style configuration of variants, load them into
+     *  the supported variants for Fairy Stockfish.
+     * 
+     *  @param config A string containing the ini style variant configuration. Please
+     *                see https://github.com/ianfab/Fairy-Stockfish/blob/master/src/variants.ini
+     *                for example of syntax.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    @Namespace("fairystockfish") public static native void loadVariantConfig(@StdString BytePointer config);
+    @Namespace("fairystockfish") public static native void loadVariantConfig(@StdString String config);
+
+    /**------------------------------------------------------------------------------
+     *  Returns the list of names of supported variants.
+     * 
+     *  @return A vector of variant names
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
     @Namespace("fairystockfish") public static native @ByVal VectorOfStrings availableVariants();
-    // info about variants
-    // Note that this is unsafe and does not check
-    // to ensure the variant name exists.
+
+    /**------------------------------------------------------------------------------
+     *  Returns the initial FEN for a given variant name. Note that this method does
+     *  not check that the variant you provided is within the set of supported
+     *  variants.
+     * 
+     *  @param variantName The name of the supported variant.
+     * 
+     *  @return A string representing the starting FNE for this variant.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
     @Namespace("fairystockfish") public static native @StdString BytePointer initialFen(@StdString BytePointer variantName);
     @Namespace("fairystockfish") public static native @StdString String initialFen(@StdString String variantName);
 
+    /**------------------------------------------------------------------------------
+     *  Returns a map from the name of a piece to information about that piece.
+     * 
+     *  @return The map
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
     @Namespace("fairystockfish") public static native @ByVal PieceInfoMap availablePieces();
+
+    /**------------------------------------------------------------------------------
+     *  Converts a UCI move into a SAN notation move given the variant and fen and
+     *  whether it's chess960 or not.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMove The move in UCI notation.
+     *  @param isChess960 Whether the game is chess960 or not.
+     *  @param notation The desired SAN notation.
+     * 
+     *  @return The move in SAN notation
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @StdString BytePointer getSAN(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @StdString BytePointer uciMove,
+            @Cast("bool") boolean isChess960/*=false*/,
+            @Cast("fairystockfish::Notation") int notation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+        );
+    @Namespace("fairystockfish") public static native @StdString BytePointer getSAN(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @StdString BytePointer uciMove
+        );
+    @Namespace("fairystockfish") public static native @StdString String getSAN(
+            @StdString String variantName,
+            @StdString String fen,
+            @StdString String uciMove,
+            @Cast("bool") boolean isChess960/*=false*/,
+            @Cast("fairystockfish::Notation") int notation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+        );
+    @Namespace("fairystockfish") public static native @StdString String getSAN(
+            @StdString String variantName,
+            @StdString String fen,
+            @StdString String uciMove
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Converts a set of UCI moves to SAN notation given the variant and fen and
+     *  whether it's chess960 or not.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     *  @param notation The desired SAN notation.
+     * 
+     *  @return A vector of moves in SAN notation
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getSANMoves(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/,
+            @Cast("fairystockfish::Notation") int notation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getSANMoves(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getSANMoves(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/,
+            @Cast("fairystockfish::Notation") int notation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getSANMoves(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Get legal moves from a given FEN and move list.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return a vector of legal moves in UCI notation
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getLegalMoves(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getLegalMoves(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getLegalMoves(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings getLegalMoves(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Get the resulting FEN from a given FEN and move list
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     *  @param sFen Whether the output is in sFen notation? (I'm guessing here)
+     *  @param showPromoted Whether the fen includes promoted pieces (I'm guessing here)
+     *  @param countStarted No clue. (probably has to do with games that end by certain
+     *                      types of counts, like repetitions?)
+     * 
+     *  @return the FEN of the new position
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @StdString BytePointer getFEN(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/,
+            @Cast("bool") boolean sFen/*=false*/,
+            @Cast("bool") boolean showPromoted/*=false*/,
+            int countStarted/*=0*/
+        );
+    @Namespace("fairystockfish") public static native @StdString BytePointer getFEN(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @StdString String getFEN(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/,
+            @Cast("bool") boolean sFen/*=false*/,
+            @Cast("bool") boolean showPromoted/*=false*/,
+            int countStarted/*=0*/
+        );
+    @Namespace("fairystockfish") public static native @StdString String getFEN(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Get check status from a given fen and movelist.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return the FEN of the new position
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean givesCheck(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean givesCheck(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean givesCheck(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean givesCheck(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Gets result from a given FEN, considering variant end, checkmate and stalemate
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return Returns an integer that represents the result (don't know what it
+     *          means yet
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native int gameResult(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native int gameResult(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native int gameResult(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native int gameResult(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Figures out if variant rules immediately end the game
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return Returns a boolean indicating if the game is an immediate end as well
+     *          as the integer result value.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isImmediateGameEnd(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isImmediateGameEnd(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isImmediateGameEnd(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isImmediateGameEnd(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Get result from given FEN if rules enable game end by player.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     *  @param countStarted No clue. (probably has to do with games that end by certain
+     *                      types of counts, like repetitions?)
+     * 
+     *  @return Returns a boolean indicating if the game is an immediate end as well
+     *          as the integer result value.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isOptionalGameEnd(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/,
+            int countStarted/*=0*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isOptionalGameEnd(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isOptionalGameEnd(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/,
+            int countStarted/*=0*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolIntPair isOptionalGameEnd(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Checks for insufficient material on behalf of both players.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return Returns two booleans, one for each player which indicate if that player
+     *          has sufficient material
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @ByVal BoolBoolPair hasInsufficientMaterial(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolBoolPair hasInsufficientMaterial(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolBoolPair hasInsufficientMaterial(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal BoolBoolPair hasInsufficientMaterial(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Validates an input FEN.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return Whether the FEN is valid or not.
+     * ------------------------------------------------------------------------------ */
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
+            @StdString String variantName,
+            @StdString String fen,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
+            @StdString String variantName,
+            @StdString String fen
+        );
 
 
 // #endif // FAIRYSTOCKFISH_H
