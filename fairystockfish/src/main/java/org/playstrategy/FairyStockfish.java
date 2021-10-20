@@ -37,6 +37,34 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     }
 }
 
+@Name("std::map<std::string,fairystockfish::Piece>") public static class PieceMap extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public PieceMap(Pointer p) { super(p); }
+    public PieceMap()       { allocate();  }
+    private native void allocate();
+    public native @Name("operator =") @ByRef PieceMap put(@ByRef PieceMap x);
+
+    public boolean empty() { return size() == 0; }
+    public native long size();
+
+    @Index public native @ByRef Piece get(@StdString BytePointer i);
+    public native PieceMap put(@StdString BytePointer i, Piece value);
+
+    public native void erase(@ByVal Iterator pos);
+    public native @ByVal Iterator begin();
+    public native @ByVal Iterator end();
+    @NoOffset @Name("iterator") public static class Iterator extends Pointer {
+        public Iterator(Pointer p) { super(p); }
+        public Iterator() { }
+
+        public native @Name("operator ++") @ByRef Iterator increment();
+        public native @Name("operator ==") boolean equals(@ByRef Iterator it);
+        public native @Name("operator *().first") @MemberGetter @StdString BytePointer first();
+        public native @Name("operator *().second") @MemberGetter @ByRef @Const Piece second();
+    }
+}
+
 @Name("std::vector<std::string>") public static class VectorOfStrings extends Pointer {
     static { Loader.load(); }
     /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
@@ -117,6 +145,74 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
         return put(0, value);
     }
     public VectorOfStrings put(String ... array) {
+        if (size() != array.length) { resize(array.length); }
+        for (int i = 0; i < array.length; i++) {
+            put(i, array[i]);
+        }
+        return this;
+    }
+}
+
+@Name("std::vector<fairystockfish::Piece>") public static class VectorOfPieces extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public VectorOfPieces(Pointer p) { super(p); }
+    public VectorOfPieces(Piece value) { this(1); put(0, value); }
+    public VectorOfPieces(Piece ... array) { this(array.length); put(array); }
+    public VectorOfPieces()       { allocate();  }
+    public VectorOfPieces(long n) { allocate(n); }
+    private native void allocate();
+    private native void allocate(@Cast("size_t") long n);
+    public native @Name("operator =") @ByRef VectorOfPieces put(@ByRef VectorOfPieces x);
+
+    public boolean empty() { return size() == 0; }
+    public native long size();
+    public void clear() { resize(0); }
+    public native void resize(@Cast("size_t") long n);
+
+    @Index(function = "at") public native @ByRef Piece get(@Cast("size_t") long i);
+    public native VectorOfPieces put(@Cast("size_t") long i, Piece value);
+
+    public native @ByVal Iterator insert(@ByVal Iterator pos, @ByRef Piece value);
+    public native @ByVal Iterator erase(@ByVal Iterator pos);
+    public native @ByVal Iterator begin();
+    public native @ByVal Iterator end();
+    @NoOffset @Name("iterator") public static class Iterator extends Pointer {
+        public Iterator(Pointer p) { super(p); }
+        public Iterator() { }
+
+        public native @Name("operator ++") @ByRef Iterator increment();
+        public native @Name("operator ==") boolean equals(@ByRef Iterator it);
+        public native @Name("operator *") @ByRef @Const Piece get();
+    }
+
+    public Piece[] get() {
+        Piece[] array = new Piece[size() < Integer.MAX_VALUE ? (int)size() : Integer.MAX_VALUE];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = get(i);
+        }
+        return array;
+    }
+    @Override public String toString() {
+        return java.util.Arrays.toString(get());
+    }
+
+    public Piece pop_back() {
+        long size = size();
+        Piece value = get(size - 1);
+        resize(size - 1);
+        return value;
+    }
+    public VectorOfPieces push_back(Piece value) {
+        long size = size();
+        resize(size + 1);
+        return put(size, value);
+    }
+    public VectorOfPieces put(Piece value) {
+        if (size() != 1) { resize(1); }
+        return put(0, value);
+    }
+    public VectorOfPieces put(Piece ... array) {
         if (size() != array.length) { resize(array.length); }
         for (int i = 0; i < array.length; i++) {
             put(i, array[i]);
@@ -215,6 +311,31 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 
             public native @StdString BytePointer name();
             public native @StdString BytePointer betza();
+    }
+
+    @Namespace("fairystockfish") @NoOffset public static class Piece extends Pointer {
+        static { Loader.load(); }
+        /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+        public Piece(Pointer p) { super(p); }
+        /** Native array allocator. Access with {@link Pointer#position(long)}. */
+        public Piece(long size) { super((Pointer)null); allocateArray(size); }
+        private native void allocateArray(long size);
+        @Override public Piece position(long position) {
+            return (Piece)super.position(position);
+        }
+        @Override public Piece getPointer(long i) {
+            return new Piece((Pointer)this).offsetAddress(i);
+        }
+    
+            public Piece() { super((Pointer)null); allocate(); }
+            private native void allocate();
+            public Piece(int pt, int color) { super((Pointer)null); allocate(pt, color); }
+            private native void allocate(int pt, int color);
+
+            public native @ByVal PieceInfo pieceInfo();
+            public native int color();
+            public native @Cast("bool") boolean isWhite();
+            public native @Cast("bool") boolean isBlack();
     }
 
     @Namespace("fairystockfish") public static native @Cast("bool") boolean _fairystockfish_is_initialized(); public static native void _fairystockfish_is_initialized(boolean setter);
@@ -658,6 +779,9 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
      * 
      *  @return Whether the FEN is valid or not.
      * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
     @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
             @StdString BytePointer variantName,
             @StdString BytePointer fen,
@@ -676,6 +800,68 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
             @StdString String variantName,
             @StdString String fen
         );
+
+    /**------------------------------------------------------------------------------
+     *  Returns a piece map for a given position and variant.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return The map from UCI square notation to piece id integers.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @ByVal PieceMap piecesOnBoard(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal PieceMap piecesOnBoard(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen
+        );
+    @Namespace("fairystockfish") public static native @ByVal PieceMap piecesOnBoard(
+            @StdString String variantName,
+            @StdString String fen,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal PieceMap piecesOnBoard(
+            @StdString String variantName,
+            @StdString String fen
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Returns pieces in hand. It returns a single vector where pieces can be of
+     *  either color. So it's up to the caller to filter them
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return A vectors of pieces that are "in hand"
+     * ------------------------------------------------------------------------------ */
+    @Namespace("fairystockfish") public static native @ByVal VectorOfPieces piecesInHand(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfPieces piecesInHand(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfPieces piecesInHand(
+            @StdString String variantName,
+            @StdString String fen,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfPieces piecesInHand(
+            @StdString String variantName,
+            @StdString String fen
+        );
+
+
 
 
 // #endif // FAIRYSTOCKFISH_H
