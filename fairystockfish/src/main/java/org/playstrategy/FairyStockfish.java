@@ -338,7 +338,6 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
             public native @Cast("bool") boolean isBlack();
     }
 
-    @Namespace("fairystockfish") public static native @Cast("bool") boolean _fairystockfish_is_initialized(); public static native void _fairystockfish_is_initialized(boolean setter);
     /**------------------------------------------------------------------------------
      *  Initialize the fairystockfish library.
      * ------------------------------------------------------------------------------ */
