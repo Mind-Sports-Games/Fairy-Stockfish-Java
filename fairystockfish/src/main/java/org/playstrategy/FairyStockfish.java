@@ -329,11 +329,14 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     
             public Piece() { super((Pointer)null); allocate(); }
             private native void allocate();
+            public Piece(int pt, int color, @Cast("bool") boolean promoted/*=false*/) { super((Pointer)null); allocate(pt, color, promoted); }
+            private native void allocate(int pt, int color, @Cast("bool") boolean promoted/*=false*/);
             public Piece(int pt, int color) { super((Pointer)null); allocate(pt, color); }
             private native void allocate(int pt, int color);
 
             public native @ByVal PieceInfo pieceInfo();
             public native int color();
+            public native @Cast("bool") boolean promoted();
             public native @Cast("bool") boolean isWhite();
             public native @Cast("bool") boolean isBlack();
     }
