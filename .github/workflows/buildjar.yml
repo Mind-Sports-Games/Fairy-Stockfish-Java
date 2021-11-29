@@ -22,6 +22,7 @@ jobs:
           cd thirdparty/Fairy-Stockfish-Lib/
           cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
           cmake --build build
+          ./build/test/test_fairystockfish
           cd -
       - name: Build javacpp jar
         run: |
