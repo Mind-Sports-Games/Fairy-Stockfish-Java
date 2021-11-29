@@ -71,6 +71,7 @@ publishing {
             descriptor.description {
                 text = providers.provider({ description })
             }
+            artifacts = [jar, javacppJar]
         }
     }
 }
