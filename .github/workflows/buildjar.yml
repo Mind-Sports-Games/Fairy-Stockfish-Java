@@ -17,13 +17,6 @@ jobs:
         with:
           distribution: zulu
           java-version: 14.0.1
-      - name: Build c++ library
-        run: |
-          cd thirdparty/Fairy-Stockfish-Lib/
-          cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
-          ./build/test/test_fairystockfish
-          cd -
       - name: Build javacpp jar
         run: |
           ./gradlew publish
@@ -31,10 +24,10 @@ jobs:
         if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev') && github.event_name == 'push'
         with:
           name: fairystockfish-0.0.1.jar
-          path: fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish-0.0.1.jar
+          path: fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish.jar
       - uses: actions/upload-artifact@v1
         if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev') && github.event_name == 'push'
         with:
           name: fairystockfish-0.0.1-linux-x86_64.jar
-          path: fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish-0.0.1-linux-x86_64.jar
+          path: fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish-linux-x86_64.jar
 

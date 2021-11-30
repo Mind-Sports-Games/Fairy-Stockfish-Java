@@ -38,6 +38,7 @@ tasks.withType(org.bytedeco.gradle.javacpp.BuildTask) {
 
 javacppBuildCommand {
     // typically set here the buildCommand to the script that fills up includePath and linkPath
+    buildCommand = ['bash', 'buildcpp.sh']
 }
 
 javacppBuildParser {
@@ -60,7 +61,7 @@ publishing {
         ivy {
             url = layout.buildDirectory.dir("repo")
             patternLayout {
-                artifact '[organisation]/[module]/[revision]/[type]s/[artifact]-[revision](-[classifier])(.[ext])'
+                artifact '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
                 ivy '[organisation]/[module]/[revision]/[type]s/[artifact](.[ext])'
             }
         }
