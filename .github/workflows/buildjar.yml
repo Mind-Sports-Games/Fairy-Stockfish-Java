@@ -30,6 +30,11 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev') && github.event_name == 'push'
         with:
-          name: fairystockfish.jar
-          path: ./fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish.jar
+          name: fairystockfish-0.0.1.jar
+          path: fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish-0.0.1.jar
+      - uses: actions/upload-artifact@v1
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev') && github.event_name == 'push'
+        with:
+          name: fairystockfish-0.0.1-linux-x86_64.jar
+          path: fairystockfish/build/repo/org.playstrategy/fairystockfish/0.0.1/jars/fairystockfish-0.0.1-linux-x86_64.jar
 
