@@ -60,7 +60,7 @@ publishing {
         ivy {
             url = layout.buildDirectory.dir("repo")
             patternLayout {
-                artifact '[organisation]/[module]/[revision]/[type]s/[artifact](.[ext])'
+                artifact '[organisation]/[module]/[revision]/[type]s/[artifact]-[revision](-[classifier])(.[ext])'
                 ivy '[organisation]/[module]/[revision]/[type]s/[artifact](.[ext])'
             }
         }
