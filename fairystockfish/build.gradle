@@ -11,6 +11,7 @@ plugins {
     id 'java-library'
     id 'org.bytedeco.gradle-javacpp-build' version "$javacppVersion"
     id 'ivy-publish'
+    id 'maven-publish'
 }
 
 version = '0.0.1'
@@ -56,6 +57,32 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+def pomClosure = {
+    name = 'Fairy Stockfish for Java/Scala'
+    delegate.description = 'A simple wrapper for fairystockfish/scala'
+    url = 'https://github.com/Mind-Sports-Games/Fairy-Stockfish-Java'
+    licenses {
+        license {
+            name = 'GNU General Public License v3.0'
+            url = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+            distribution = 'repo'
+        }
+    }
+    developers {
+        developer {
+            id = 'lakinwecker'
+            name = 'Lakin Wecker'
+            email = 'lakin@structuredabstraction.com.com'
+        }
+    }
+    scm {
+        url = 'https://github.com/Mind-Sports-Games/Fairy-Stockfish-Java'
+        connection = 'scm:git:git://github.com/Mind-Sports-Games/Fairy-Stockfish.git'
+        developerConnection = 'scm:git:ssh://git@github.com/Mind-Sports-Games/Fairy-Stockfish-Java.git'
+    }
+}
+
+
 publishing {
     repositories {
         ivy {
@@ -65,6 +92,10 @@ publishing {
                 ivy '[organisation]/[module]/[revision]/[type]s/[artifact](.[ext])'
             }
         }
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url = layout.buildDirectory.dir('repo')
+        }
     }
     publications {
         ivy(IvyPublication) {
@@ -73,6 +104,11 @@ publishing {
                 text = providers.provider({ description })
             }
             artifacts = [jar, javacppJar]
+        }
+        mavenJava(MavenPublication) {
+            from components.java
+            artifacts = [jar, javacppJar]
+            pom pomClosure
         }
     }
 }
