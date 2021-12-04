@@ -776,6 +776,83 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
         );
 
     /**------------------------------------------------------------------------------
+     *  Tests if the position has a mvoe which draws by repetition,or an earlier
+     *  position has a move that directly reaches the current position.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param ply The number of ply to search (Don't really know?)
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return A vectors of pieces that are "in hand"
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasGameCycle(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasGameCycle(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasGameCycle(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasGameCycle(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Tests whether there has been at least one repetition of positions since the
+     *  last capture or pawn move.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return A vectors of pieces that are "in hand"
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasRepeated(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasRepeated(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasRepeated(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean hasRepeated(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves
+        );
+
+    /**------------------------------------------------------------------------------
      *  Validates an input FEN.
      * 
      *  @param variantName The variant for the fen

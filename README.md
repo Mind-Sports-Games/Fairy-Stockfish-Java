@@ -44,5 +44,6 @@ This should build and install the library in your local maven repository which i
 You can check that this library is there with:
 ```
 ➜ find ~/.m2/repository/ -name "*.jar" | grep fairy
-/home/lakin/.m2/repository/fairystockfish/fairystockfish/0.0.1/fairystockfish-0.0.1.jar
+/home/lakin/.m2/repository/org/playstrategy/fairystockfish/0.0.2/fairystockfish-0.0.2-linux-x86_64.jar
+/home/lakin/.m2/repository/org/playstrategy/fairystockfish/0.0.2/fairystockfish-0.0.2.jar
 ```
