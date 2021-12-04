@@ -739,6 +739,48 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
         );
 
     /**------------------------------------------------------------------------------
+     *  Returns whether it's a draw or not.
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param uciMoves A vector of moves in UCI notation
+     *  @param ply the number of ply to consider.
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return Returns a boolean indicating if the game is an immediate end as well
+     *          as the integer result value.
+     * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean isDraw(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean isDraw(
+            @StdString BytePointer variantName,
+            @StdString BytePointer fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean isDraw(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply,
+            @Cast("bool") boolean isChess960/*=false*/
+        );
+    @Namespace("fairystockfish") public static native @Cast("bool") boolean isDraw(
+            @StdString String variantName,
+            @StdString String fen,
+            @ByVal VectorOfStrings uciMoves,
+            int ply
+        );
+
+    /**------------------------------------------------------------------------------
      *  Checks for insufficient material on behalf of both players.
      * 
      *  @param variantName The variant for the fen
