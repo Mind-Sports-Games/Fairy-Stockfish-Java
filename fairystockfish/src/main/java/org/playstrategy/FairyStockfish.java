@@ -997,6 +997,34 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 
             public native @StdString BytePointer variant(); public native Position variant(BytePointer setter);
             public native @Cast("bool") boolean isChess960(); public native Position isChess960(boolean setter);
+            public Position(
+                            @StdString BytePointer _variant,
+                            @Cast("bool") boolean _isChess960/*=false*/
+                        ) { super((Pointer)null); allocate(_variant, _isChess960); }
+            private native void allocate(
+                            @StdString BytePointer _variant,
+                            @Cast("bool") boolean _isChess960/*=false*/
+                        );
+            public Position(
+                            @StdString BytePointer _variant
+                        ) { super((Pointer)null); allocate(_variant); }
+            private native void allocate(
+                            @StdString BytePointer _variant
+                        );
+            public Position(
+                            @StdString String _variant,
+                            @Cast("bool") boolean _isChess960/*=false*/
+                        ) { super((Pointer)null); allocate(_variant, _isChess960); }
+            private native void allocate(
+                            @StdString String _variant,
+                            @Cast("bool") boolean _isChess960/*=false*/
+                        );
+            public Position(
+                            @StdString String _variant
+                        ) { super((Pointer)null); allocate(_variant); }
+            private native void allocate(
+                            @StdString String _variant
+                        );
 
             public Position(
                             @StdString BytePointer _variant,
