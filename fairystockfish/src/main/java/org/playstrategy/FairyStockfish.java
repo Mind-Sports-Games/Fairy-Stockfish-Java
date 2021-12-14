@@ -259,6 +259,7 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #define FAIRYSTOCKFISH_H
 
 // #include <sstream>
+// #include <climits>
 
 // #include "misc.h"
 // #include "types.h"
@@ -984,6 +985,242 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
             @StdString String variantName,
             @StdString String fen
         );
+
+    /**------------------------------------------------------------------------------
+     *  A position with a specific game variant.
+     * ------------------------------------------------------------------------------ */
+    @Namespace("fairystockfish") @NoOffset public static class Position extends Pointer {
+        static { Loader.load(); }
+        /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+        public Position(Pointer p) { super(p); }
+    
+
+            public native @StdString BytePointer variant(); public native Position variant(BytePointer setter);
+            public native @Cast("bool") boolean isChess960(); public native Position isChess960(boolean setter);
+
+            public Position(
+                            @StdString BytePointer _variant,
+                            @StdString BytePointer startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
+                            @Cast("bool") boolean _isChess960
+                        ) { super((Pointer)null); allocate(_variant, startingFen, moveList, _isChess960); }
+            private native void allocate(
+                            @StdString BytePointer _variant,
+                            @StdString BytePointer startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
+                            @Cast("bool") boolean _isChess960
+                        );
+            public Position(
+                            @StdString String _variant,
+                            @StdString String startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
+                            @Cast("bool") boolean _isChess960
+                        ) { super((Pointer)null); allocate(_variant, startingFen, moveList, _isChess960); }
+            private native void allocate(
+                            @StdString String _variant,
+                            @StdString String startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
+                            @Cast("bool") boolean _isChess960
+                        );
+
+            public Position(@Const @ByRef Position p) { super((Pointer)null); allocate(p); }
+            private native void allocate(@Const @ByRef Position p);
+            public native @ByRef @Name("operator =") Position put(@Const @ByRef Position p);
+
+            /**------------------------------------------------------------------------------
+             *  Returns a new, updated positions with the given moves
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            ///
+            public native @ByVal Position makeMoves(@Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings uciMoves);
+
+            /**------------------------------------------------------------------------------
+             *  Converts a UCI move into a SAN notation move given the variant and fen and
+             *  whether it's chess960 or not.
+             * 
+             *  @param uciMove The move in UCI notation.
+             *  @param notation The desired SAN notation.
+             * 
+             *  @return The move in SAN notation
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            ///
+            public native @StdString BytePointer getSAN(
+                            @StdString BytePointer uciMove,
+                            @Cast("fairystockfish::Notation") int notation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+                        );
+            public native @StdString BytePointer getSAN(
+                            @StdString BytePointer uciMove
+                        );
+            public native @StdString String getSAN(
+                            @StdString String uciMove,
+                            @Cast("fairystockfish::Notation") int notation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+                        );
+            public native @StdString String getSAN(
+                            @StdString String uciMove
+                        );
+
+            /**------------------------------------------------------------------------------
+             *  Converts a set of UCI moves to SAN notation given the variant and fen and
+             *  whether it's chess960 or not.
+             * 
+             *  @param uciMoves A vector of moves in UCI notation
+             *  @param notation The desired SAN notation.
+             * 
+             *  @return A vector of moves in SAN notation
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @ByVal VectorOfStrings getSANMoves(
+                            @ByVal VectorOfStrings uciMoves,
+                            @Cast("fairystockfish::Notation") int ourNotation/*=fairystockfish::Notation::NOTATION_DEFAULT*/
+                        );
+            public native @ByVal VectorOfStrings getSANMoves(
+                            @ByVal VectorOfStrings uciMoves
+                        );
+
+            /**------------------------------------------------------------------------------
+             *  Get legal moves from a given FEN and move list.
+             * 
+             *  @return a vector of legal moves in UCI notation
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            ///
+            public native @ByVal VectorOfStrings getLegalMoves();
+
+            /**------------------------------------------------------------------------------
+             *  Get the resulting FEN from a given FEN and move list
+             * 
+             *  @param sFen Whether the output is in sFen notation? (I'm guessing here)
+             *  @param showPromoted Whether the fen includes promoted pieces (I'm guessing here)
+             *  @param countStarted No clue. (probably has to do with games that end by certain
+             *                      types of counts, like repetitions?)
+             * 
+             *  @return the FEN of the new position
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @StdString BytePointer getFEN(
+                            @Cast("bool") boolean sFen/*=false*/,
+                            @Cast("bool") boolean showPromoted/*=false*/,
+                            int countStarted/*=0*/
+                        );
+            public native @StdString BytePointer getFEN(
+                        );
+
+            /**------------------------------------------------------------------------------
+             *  Get check status from a given fen and movelist.
+             * 
+             *  @return the FEN of the new position
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @Cast("bool") boolean givesCheck();
+
+            /**------------------------------------------------------------------------------
+             *  Gets result from a given FEN, considering variant end, checkmate and stalemate
+             *  Note that this function will assert there are no legal moves. So only call it
+             *  when legalMoves are zero
+             * 
+             *  @return Returns an integer that represents the result (don't know what it
+             *          means yet
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native int gameResult();
+
+            /**------------------------------------------------------------------------------
+             *  Figures out if variant rules immediately end the game.
+             *  Note that this does not mean checkmate, checkmates are somewhere else.
+             * 
+             *  @return Returns a boolean indicating if the game is an immediate end as well
+             *          as the integer result value.
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            ///
+            public native @ByVal BoolIntPair isImmediateGameEnd();
+
+            /**------------------------------------------------------------------------------
+             *  Get result from given FEN if rules enable game end by player.
+             * 
+             *  @param countStarted No clue. (probably has to do with games that end by certain
+             *                      types of counts, like repetitions?)
+             * 
+             *  @return Returns a boolean indicating if the game is an immediate end as well
+             *          as the integer result value.
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            ///
+            public native @ByVal BoolIntPair isOptionalGameEnd(int countStarted/*=0*/);
+            public native @ByVal BoolIntPair isOptionalGameEnd();
+
+            /**------------------------------------------------------------------------------
+             *  Returns whether it's a draw or not.
+             * 
+             *  @param ply the number of ply to consider.
+             * 
+             *  @return Returns a boolean indicating if the game is an immediate end as well
+             *          as the integer result value.
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @Cast("bool") boolean isDraw(int ply);
+
+            /**------------------------------------------------------------------------------
+             *  Checks for insufficient material on behalf of both players.
+             * 
+             *  @return Returns two booleans, one for each player which indicate if that player
+             *          has sufficient material
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            ///
+            public native @ByVal BoolBoolPair hasInsufficientMaterial();
+
+            /**------------------------------------------------------------------------------
+             *  Tests if the position has a mvoe which draws by repetition,or an earlier
+             *  position has a move that directly reaches the current position.
+             * 
+             *  @param ply The number of ply to search (Don't really know?)
+             * 
+             *  @return A vectors of pieces that are "in hand"
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @Cast("bool") boolean hasGameCycle(int ply);
+
+            /**------------------------------------------------------------------------------
+             *  Tests whether there has been at least one repetition of positions since the
+             *  last capture or pawn move.
+             * 
+             *  @return A vectors of pieces that are "in hand"
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @Cast("bool") boolean hasRepeated();
+
+            /**------------------------------------------------------------------------------
+             *  Returns a piece map for a given position and variant.
+             * 
+             *  @return The map from UCI square notation to piece id integers.
+             * ------------------------------------------------------------------------------ */
+            
+            ///
+            public native @ByVal PieceMap piecesOnBoard();
+
+            /**------------------------------------------------------------------------------
+             *  Returns pieces in hand. It returns a single vector where pieces can be of
+             *  either color. So it's up to the caller to filter them
+             * 
+             *  @return A vectors of pieces that are "in hand"
+             * ------------------------------------------------------------------------------ */
+            public native @ByVal VectorOfPieces piecesInHand();
+    }
 
 
 
