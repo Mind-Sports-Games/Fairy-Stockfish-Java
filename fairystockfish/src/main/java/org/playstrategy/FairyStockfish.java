@@ -1005,30 +1005,58 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
             private native void allocate(@StdString String _variant, @Cast("bool") boolean _isChess960/*=false*/);
             public Position(@StdString String _variant) { super((Pointer)null); allocate(_variant); }
             private native void allocate(@StdString String _variant);
+            public Position(@StdString BytePointer _variant, @StdString BytePointer startingFen, @Cast("bool") boolean _isChess960/*=false*/) { super((Pointer)null); allocate(_variant, startingFen, _isChess960); }
+            private native void allocate(@StdString BytePointer _variant, @StdString BytePointer startingFen, @Cast("bool") boolean _isChess960/*=false*/);
+            public Position(@StdString BytePointer _variant, @StdString BytePointer startingFen) { super((Pointer)null); allocate(_variant, startingFen); }
+            private native void allocate(@StdString BytePointer _variant, @StdString BytePointer startingFen);
+            public Position(@StdString String _variant, @StdString String startingFen, @Cast("bool") boolean _isChess960/*=false*/) { super((Pointer)null); allocate(_variant, startingFen, _isChess960); }
+            private native void allocate(@StdString String _variant, @StdString String startingFen, @Cast("bool") boolean _isChess960/*=false*/);
+            public Position(@StdString String _variant, @StdString String startingFen) { super((Pointer)null); allocate(_variant, startingFen); }
+            private native void allocate(@StdString String _variant, @StdString String startingFen);
 
             public Position(
                             @StdString BytePointer _variant,
                             @StdString BytePointer startingFen,
                             @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
-                            @Cast("bool") boolean _isChess960
+                            @Cast("bool") boolean _isChess960/*=false*/
                         ) { super((Pointer)null); allocate(_variant, startingFen, moveList, _isChess960); }
             private native void allocate(
                             @StdString BytePointer _variant,
                             @StdString BytePointer startingFen,
                             @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
-                            @Cast("bool") boolean _isChess960
+                            @Cast("bool") boolean _isChess960/*=false*/
+                        );
+            public Position(
+                            @StdString BytePointer _variant,
+                            @StdString BytePointer startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList
+                        ) { super((Pointer)null); allocate(_variant, startingFen, moveList); }
+            private native void allocate(
+                            @StdString BytePointer _variant,
+                            @StdString BytePointer startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList
                         );
             public Position(
                             @StdString String _variant,
                             @StdString String startingFen,
                             @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
-                            @Cast("bool") boolean _isChess960
+                            @Cast("bool") boolean _isChess960/*=false*/
                         ) { super((Pointer)null); allocate(_variant, startingFen, moveList, _isChess960); }
             private native void allocate(
                             @StdString String _variant,
                             @StdString String startingFen,
                             @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList,
-                            @Cast("bool") boolean _isChess960
+                            @Cast("bool") boolean _isChess960/*=false*/
+                        );
+            public Position(
+                            @StdString String _variant,
+                            @StdString String startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList
+                        ) { super((Pointer)null); allocate(_variant, startingFen, moveList); }
+            private native void allocate(
+                            @StdString String _variant,
+                            @StdString String startingFen,
+                            @Cast("const fairystockfish::Position::MoveList*") @ByRef VectorOfStrings moveList
                         );
 
             public Position(@Const @ByRef Position p) { super((Pointer)null); allocate(p); }
