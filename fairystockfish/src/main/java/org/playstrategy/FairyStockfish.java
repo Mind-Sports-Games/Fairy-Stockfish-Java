@@ -276,6 +276,7 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #include "apiutil.h"
 
 // #include <vector>
+// #include <memory>
 // #include <map>
 
 
