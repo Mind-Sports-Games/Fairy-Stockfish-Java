@@ -258,9 +258,6 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #ifndef FAIRYSTOCKFISH_H
 // #define FAIRYSTOCKFISH_H
 
-// #include <sstream>
-// #include <climits>
-
 // #include "misc.h"
 // #include "types.h"
 // #include "bitboard.h"
@@ -275,9 +272,12 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #include "variant.h"
 // #include "apiutil.h"
 
-// #include <vector>
-// #include <memory>
+// #include <climits>
 // #include <map>
+// #include <memory>
+// #include <sstream>
+// #include <list>
+// #include <vector>
 
 
     // Copied from the apiutil.h
