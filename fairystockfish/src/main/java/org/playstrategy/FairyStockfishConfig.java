@@ -22,5 +22,6 @@ public class FairyStockfishConfig implements InfoMapper {
         infoMap.put(new Info("std::tuple<bool,bool>").pointerTypes("BoolBoolPair").define());
         infoMap.put(new Info("std::vector<std::string>").pointerTypes("VectorOfStrings").define());
         infoMap.put(new Info("std::vector<fairystockfish::Piece>").pointerTypes("VectorOfPieces").define());
+        infoMap.put(new Info("std::uint8_t").cast().valueTypes("byte").pointerTypes("BytePointer", "ByteBuffer", "byte[]"));
     }
 }
