@@ -454,6 +454,9 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
      * 
      *  @return Whether the FEN is valid or not.
      * ------------------------------------------------------------------------------ */
+    
+    ///
+    ///
     @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
             @StdString BytePointer variantName,
             @StdString BytePointer fen,
@@ -471,6 +474,24 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     @Namespace("fairystockfish") public static native @Cast("bool") boolean validateFEN(
             @StdString String variantName,
             @StdString String fen
+        );
+
+    /**------------------------------------------------------------------------------
+     *  Converts uci moves into chess960 notation
+     * 
+     *  @param variantName The variant for the fen
+     *  @param fen The FEN of the current possition
+     *  @param isChess960 Whether the game is chess960 or not.
+     * 
+     *  @return Whether the FEN is valid or not.
+     * ------------------------------------------------------------------------------ */
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings to960Uci(
+            @StdString BytePointer variantName,
+            @ByVal VectorOfStrings moves
+        );
+    @Namespace("fairystockfish") public static native @ByVal VectorOfStrings to960Uci(
+            @StdString String variantName,
+            @ByVal VectorOfStrings moves
         );
 
     /**------------------------------------------------------------------------------
