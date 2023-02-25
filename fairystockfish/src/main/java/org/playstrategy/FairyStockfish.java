@@ -65,7 +65,7 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     }
 }
 
-@Name("std::map<int,fairystockfish::Piece>") public static class PieceMap extends Pointer {
+@Name("std::map<fairystockfish::Square,fairystockfish::Piece>") public static class PieceMap extends Pointer {
     static { Loader.load(); }
     /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
     public PieceMap(Pointer p) { super(p); }
@@ -76,8 +76,8 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     public boolean empty() { return size() == 0; }
     public native long size();
 
-    @Index public native @ByRef Piece get(int i);
-    public native PieceMap put(int i, Piece value);
+    @Index public native @ByRef Piece get(Square i);
+    public native PieceMap put(Square i, Piece value);
 
     public native void erase(@ByVal Iterator pos);
     public native @ByVal Iterator begin();
@@ -88,7 +88,7 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 
         public native @Name("operator ++") @ByRef Iterator increment();
         public native @Name("operator ==") boolean equals(@ByRef Iterator it);
-        public native @Name("operator *().first") @MemberGetter int first();
+        public native @Name("operator *().first") @MemberGetter Square first();
         public native @Name("operator *().second") @MemberGetter @ByRef @Const Piece second();
     }
 }
@@ -307,6 +307,33 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
 // #include <list>
 // #include <vector>
 
+    // Copied from the types.h
+    @Namespace("fairystockfish") public enum Square {
+      SQ_A1((byte)(0)), SQ_B1((byte)(1)), SQ_C1((byte)(2)), SQ_D1((byte)(3)), SQ_E1((byte)(4)), SQ_F1((byte)(5)), SQ_G1((byte)(6)), SQ_H1((byte)(7)), SQ_I1((byte)(8)), SQ_J1((byte)(9)), SQ_K1((byte)(10)), SQ_L1((byte)(11)),
+      SQ_A2((byte)(12)), SQ_B2((byte)(13)), SQ_C2((byte)(14)), SQ_D2((byte)(15)), SQ_E2((byte)(16)), SQ_F2((byte)(17)), SQ_G2((byte)(18)), SQ_H2((byte)(19)), SQ_I2((byte)(20)), SQ_J2((byte)(21)), SQ_K2((byte)(22)), SQ_L2((byte)(23)),
+      SQ_A3((byte)(24)), SQ_B3((byte)(25)), SQ_C3((byte)(26)), SQ_D3((byte)(27)), SQ_E3((byte)(28)), SQ_F3((byte)(29)), SQ_G3((byte)(30)), SQ_H3((byte)(31)), SQ_I3((byte)(32)), SQ_J3((byte)(33)), SQ_K3((byte)(34)), SQ_L3((byte)(35)),
+      SQ_A4((byte)(36)), SQ_B4((byte)(37)), SQ_C4((byte)(38)), SQ_D4((byte)(39)), SQ_E4((byte)(40)), SQ_F4((byte)(41)), SQ_G4((byte)(42)), SQ_H4((byte)(43)), SQ_I4((byte)(44)), SQ_J4((byte)(45)), SQ_K4((byte)(46)), SQ_L4((byte)(47)),
+      SQ_A5((byte)(48)), SQ_B5((byte)(49)), SQ_C5((byte)(50)), SQ_D5((byte)(51)), SQ_E5((byte)(52)), SQ_F5((byte)(53)), SQ_G5((byte)(54)), SQ_H5((byte)(55)), SQ_I5((byte)(56)), SQ_J5((byte)(57)), SQ_K5((byte)(58)), SQ_L5((byte)(59)),
+      SQ_A6((byte)(60)), SQ_B6((byte)(61)), SQ_C6((byte)(62)), SQ_D6((byte)(63)), SQ_E6((byte)(64)), SQ_F6((byte)(65)), SQ_G6((byte)(66)), SQ_H6((byte)(67)), SQ_I6((byte)(68)), SQ_J6((byte)(69)), SQ_K6((byte)(70)), SQ_L6((byte)(71)),
+      SQ_A7((byte)(72)), SQ_B7((byte)(73)), SQ_C7((byte)(74)), SQ_D7((byte)(75)), SQ_E7((byte)(76)), SQ_F7((byte)(77)), SQ_G7((byte)(78)), SQ_H7((byte)(79)), SQ_I7((byte)(80)), SQ_J7((byte)(81)), SQ_K7((byte)(82)), SQ_L7((byte)(83)),
+      SQ_A8((byte)(84)), SQ_B8((byte)(85)), SQ_C8((byte)(86)), SQ_D8((byte)(87)), SQ_E8((byte)(88)), SQ_F8((byte)(89)), SQ_G8((byte)(90)), SQ_H8((byte)(91)), SQ_I8((byte)(92)), SQ_J8((byte)(93)), SQ_K8((byte)(94)), SQ_L8((byte)(95)),
+      SQ_A9((byte)(96)), SQ_B9((byte)(97)), SQ_C9((byte)(98)), SQ_D9((byte)(99)), SQ_E9((byte)(100)), SQ_F9((byte)(101)), SQ_G9((byte)(102)), SQ_H9((byte)(103)), SQ_I9((byte)(104)), SQ_J9((byte)(105)), SQ_K9((byte)(106)), SQ_L9((byte)(107)),
+      SQ_A10((byte)(108)), SQ_B10((byte)(109)), SQ_C10((byte)(110)), SQ_D10((byte)(111)), SQ_E10((byte)(112)), SQ_F10((byte)(113)), SQ_G10((byte)(114)), SQ_H10((byte)(115)), SQ_I10((byte)(116)), SQ_J10((byte)(117)), SQ_K10((byte)(118)), SQ_L10((byte)(119)),
+      SQ_NONE((byte)(120)),
+
+      SQUARE_ZERO((byte)(0)),
+      SQUARE_NB((byte)(120)),
+      SQUARE_BIT_MASK((byte)(127)),
+      SQ_MAX((byte)(119)), // SQUARE_NB - 1 NOTE: this has to be hard coded due to javacpp (or my lack of knowledge of javacpp)
+      SQUARE_NB_CHESS((byte)(64)),
+      SQUARE_NB_SHOGI((byte)(81));
+
+        public final byte value;
+        private Square(byte v) { this.value = v; }
+        private Square(Square e) { this.value = e.value; }
+        public Square intern() { for (Square e : values()) if (e.value == value) return e; return this; }
+        @Override public String toString() { return intern().name(); }
+    }
 
     // Copied from the apiutil.h
     /** enum fairystockfish::Notation */
