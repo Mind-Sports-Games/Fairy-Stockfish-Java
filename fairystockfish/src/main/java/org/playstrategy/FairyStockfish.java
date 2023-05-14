@@ -93,6 +93,34 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
     }
 }
 
+@Name("std::map<fairystockfish::Square,bool>") public static class WallMap extends Pointer {
+    static { Loader.load(); }
+    /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
+    public WallMap(Pointer p) { super(p); }
+    public WallMap()       { allocate();  }
+    private native void allocate();
+    public native @Name("operator =") @ByRef WallMap put(@ByRef WallMap x);
+
+    public boolean empty() { return size() == 0; }
+    public native long size();
+
+    @Index public native @Cast("bool") boolean get(Square i);
+    public native WallMap put(Square i, boolean value);
+
+    public native void erase(@ByVal Iterator pos);
+    public native @ByVal Iterator begin();
+    public native @ByVal Iterator end();
+    @NoOffset @Name("iterator") public static class Iterator extends Pointer {
+        public Iterator(Pointer p) { super(p); }
+        public Iterator() { }
+
+        public native @Name("operator ++") @ByRef Iterator increment();
+        public native @Name("operator ==") boolean equals(@ByRef Iterator it);
+        public native @Name("operator *().first") @MemberGetter Square first();
+        public native @Name("operator *().second") @MemberGetter @Cast("bool") boolean second();
+    }
+}
+
 @Name("std::vector<std::string>") public static class VectorOfStrings extends Pointer {
     static { Loader.load(); }
     /** Pointer cast constructor. Invokes {@link Pointer#Pointer(Pointer)}. */
@@ -769,9 +797,16 @@ public class FairyStockfish extends org.playstrategy.FairyStockfishConfig {
              *  Returns a piece map for a given position and variant.
              *  @return The map from square integer values to piece values.
              * ------------------------------------------------------------------------------ */
+            public native @ByVal PieceMap piecesOnBoard();
+
+            /**------------------------------------------------------------------------------
+             *  Returns a map for a given position that maps squares to walls
+             *  @return The map from square integer values to a boolean indicating if
+             *          there is a wall
+             * ------------------------------------------------------------------------------ */
             
             ///
-            public native @ByVal PieceMap piecesOnBoard();
+            public native @ByVal WallMap wallsOnBoard();
 
             /**------------------------------------------------------------------------------
              *  Returns pieces in hand. It returns a single vector where pieces can be of
