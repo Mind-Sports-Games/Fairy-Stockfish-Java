@@ -14,7 +14,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '0.0.19'
+version = '0.0.20rc1'
 group = 'org.playstrategy'
 
 
